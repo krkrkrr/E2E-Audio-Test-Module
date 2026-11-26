@@ -33,3 +33,11 @@ generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:55:00Z }
 
 serial MCP の読み出しは出力を切り詰めるため、DATA の位置の連続性と CRC は検証していない。
 #7 と #8 の欠落数は、デバイス自身が数えた値である。
+
+## 追記: Windows 上のハーネスで直接読む（2026-11-26）
+
+ユーザーが Windows の PowerShell で、`CaptureClient.open('COM7')` → `start()` → 5 秒待つ → `stop()` を実行した。音は鳴らしたまま。
+
+| # | 操作 | 観測 | 解釈 |
+|---|---|---|---|
+| 10 | ハーネスで 5 秒録音 | `Ended(session_id=6, total_frames=241008, dropped_frames=0)`、gaps `[]`、CRC エラー 0 | 約 5.02 秒分。**デバイス側の欠落 0、受信側で検出した位置の飛び 0、CRC 不一致 0**。ハーネスの読み出しは 192 kB/s に追いついている |
