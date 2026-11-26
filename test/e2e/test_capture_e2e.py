@@ -3,7 +3,7 @@
 Windows 上で、キャプチャデバイスを接続した状態で実行する。
 WASAPI 排他モードで任意の信号を鳴らし、CDC で受けた録音とビット一致することを確かめる。
 
-    set E2E_AUDIO_PORT=COM6
+    $env:E2E_AUDIO_PORT = "COM7"   # PowerShell（cmd.exe なら set E2E_AUDIO_PORT=COM7）
     pytest -m device test/e2e
 
 ビット一致が成り立つ Windows 側の条件は Q-0001 で調べている。

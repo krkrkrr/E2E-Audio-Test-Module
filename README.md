@@ -32,7 +32,7 @@ Pico の BOOTSEL ボタンを押しながら USB に挿し、現れたドライ�
 ```python
 from e2e_audio.client import CaptureClient
 
-with CaptureClient.open("COM6") as c:
+with CaptureClient.open("COM7") as c:
     with c.session() as s:
         ...  # ここでテスト対象アプリに音を出させる
     rec = s.recording
@@ -49,10 +49,12 @@ uv run --project host --extra test pytest    # ハーネス・文書・@harness 
 
 実機での E2E は Windows で実行します。
 
-```bat
-set E2E_AUDIO_PORT=COM6
+```powershell
+$env:E2E_AUDIO_PORT = "COM7"   # cmd.exe なら set E2E_AUDIO_PORT=COM7
 uv run --project host --extra test --extra play pytest -m device test/e2e
 ```
+
+他の音が鳴っていない状態で実行してください。
 
 ## ドキュメント
 
