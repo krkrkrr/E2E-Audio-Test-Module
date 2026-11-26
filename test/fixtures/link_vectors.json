@@ -1,0 +1,71 @@
+{
+  "description": "ADR-0004 のリンクフレームの試験ベクタ。Rust の符号化（capture_link.rs）と Python の復号（test_link_decoder.py）の両方がこれを満たす。CRC は CRC-16/CCITT-FALSE（check 0x29B1）。",
+  "vectors": [
+    {
+      "name": "started",
+      "kind": 1,
+      "fields": {
+        "session_id": 1
+      },
+      "hex": "a55a01040001000000ba39"
+    },
+    {
+      "name": "data_two_frames",
+      "kind": 2,
+      "fields": {
+        "position": 0,
+        "frames": [
+          [
+            1,
+            -1
+          ],
+          [
+            -32768,
+            32767
+          ]
+        ]
+      },
+      "hex": "a55a02100000000000000000000100ffff0080ff7f9f13"
+    },
+    {
+      "name": "data_high_position",
+      "kind": 2,
+      "fields": {
+        "position": 4294967296,
+        "frames": [
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      "hex": "a55a020c000000000001000000000000000752"
+    },
+    {
+      "name": "ended",
+      "kind": 3,
+      "fields": {
+        "session_id": 7,
+        "total_frames": 480,
+        "dropped_frames": 48
+      },
+      "hex": "a55a03140007000000e001000000000000300000000000000038d1"
+    },
+    {
+      "name": "error_already_recording",
+      "kind": 127,
+      "fields": {
+        "code": 1
+      },
+      "hex": "a55a7f0100014a35"
+    },
+    {
+      "name": "info",
+      "kind": 4,
+      "fields": {
+        "text": "state=idle\n"
+      },
+      "hex": "a55a040b0073746174653d69646c650ae5bf"
+    }
+  ]
+}

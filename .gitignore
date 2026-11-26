@@ -1,0 +1,9 @@
+/target
+/firmware/target
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/
+.hypothesis/
+uv.lock
+firmware/dist/

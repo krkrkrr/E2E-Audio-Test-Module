@@ -1,0 +1,9 @@
+[workspace]
+resolver = "3"
+members = ["capture-core"]
+# firmware/ は thumbv6m-none-eabi 向けの別ワークスペース
+exclude = ["firmware"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT OR Apache-2.0"
