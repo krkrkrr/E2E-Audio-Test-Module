@@ -95,10 +95,10 @@ classDiagram
 
 ## 対応する src
 
-| モデル | src（予定） |
+| モデル | src |
 |---|---|
-| `AudioStream`, `IsoPacket`, `AudioFrame`, `FeedbackValue`, `HostControls` | `capture-core/src/audio_in.rs`（`no_std`、ホストでテスト可能） |
-| USB Audio の配線（embassy-usb `uac1::speaker`） | `firmware/src/usb_audio.rs` |
+| `AudioStream`、`AudioFrame`、`AudioFormat`、`HostControls`、`FEEDBACK_48K`（`FeedbackValue`）。`IsoPacket` は `&[u8]` と `Frames` で表す | [capture-core/src/audio_in.rs](../../../capture-core/src/audio_in.rs)（`no_std`、ホストでテスト可能） |
+| USB Audio の配線（embassy-usb `uac1::speaker`）: `audio_task`、`feedback_task`、`control_task` | [firmware/src/main.rs](../../../firmware/src/main.rs) |
 
 ## Review Notes
 

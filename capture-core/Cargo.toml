@@ -26,3 +26,19 @@ path = "../test/integration/capture_link.rs"
 name = "features"
 path = "../test/integration/features.rs"
 harness = false
+
+[[test]]
+name = "unit_audio_in"
+path = "../test/unit/audio_in.rs"
+
+[[test]]
+name = "unit_link"
+path = "../test/unit/link.rs"
+
+[[test]]
+name = "unit_session"
+path = "../test/unit/session.rs"
+
+[[test]]
+name = "unit_device"
+path = "../test/unit/device.rs"

@@ -10,8 +10,10 @@ fn open_stream() -> AudioStream {
 }
 
 fn host_controls() -> impl Strategy<Value = HostControls> {
-    (any::<[bool; 2]>(), any::<[i16; 2]>())
-        .prop_map(|(muted, volume_8q8_db)| HostControls { muted, volume_8q8_db })
+    (any::<[bool; 2]>(), any::<[i16; 2]>()).prop_map(|(muted, volume_8q8_db)| HostControls {
+        muted,
+        volume_8q8_db,
+    })
 }
 
 /// ストリームに対する操作。USB からの入力そのもの。

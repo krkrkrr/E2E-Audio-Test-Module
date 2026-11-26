@@ -135,12 +135,14 @@ classDiagram
 
 ## 対応する src
 
-| モデル | src（予定） |
+| モデル | src |
 |---|---|
-| `CaptureSession`, `CaptureBuffer`, `DataChunk`, `SessionId` | `capture-core/src/session.rs` |
-| `LinkFrame`, `FrameKind`, `Command`, `LinkError`, CRC | `capture-core/src/link.rs` |
-| CDC ACM の配線 | `firmware/src/cdc_link.rs` |
-| ハーネス側のデコーダ | `host/e2e_audio/link.py` |
+| `CaptureSession`（`CaptureBuffer` を内包。`DataChunk` は `take` の戻り値、`SessionId` は `u32`） | [capture-core/src/session.rs](../../../capture-core/src/session.rs) |
+| `FrameKind`、`Command`、`LinkError`、CRC、符号化、`LineReader` | [capture-core/src/link.rs](../../../capture-core/src/link.rs) |
+| 両コンテキストをつなぐ状態機械 `Device`（応答の順序、INFO の書式） | [capture-core/src/device.rs](../../../capture-core/src/device.rs) |
+| CDC ACM の配線: `cdc_rx_task`、`cdc_tx_task` | [firmware/src/main.rs](../../../firmware/src/main.rs) |
+| ハーネス側の復号器と録音の再構成（`Decoder`、`Recording`） | [host/e2e_audio/link.py](../../../host/e2e_audio/link.py) |
+| ハーネスのクライアントと再生 | [host/e2e_audio/client.py](../../../host/e2e_audio/client.py)、[host/e2e_audio/player.py](../../../host/e2e_audio/player.py) |
 
 ## Review Notes
 

@@ -28,8 +28,12 @@ fn connected() -> Box<Device> {
 
 #[test]
 fn p_cap_4_encoder_matches_shared_vectors() {
-    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../test/fixtures/link_vectors.json");
-    let json: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
+    let path = concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../test/fixtures/link_vectors.json"
+    );
+    let json: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
     for v in json["vectors"].as_array().unwrap() {
         let f = &v["fields"];
         let mut payload = Vec::new();
@@ -228,10 +232,27 @@ impl Model {
                     let id = self.out_session.expect("DATA outside a session (P-CAP-10)");
                     self.data.entry(id).or_default().push((position, frames));
                 }
-                Out::Ended { session_id, total_frames, dropped_frames } => {
-                    assert_eq!(self.out_session, Some(session_id), "ENDED for another session (P-CAP-10)");
-                    assert!(self.ended.insert(session_id, (total_frames, dropped_frames)).is_none(), "ENDED twice");
-                    assert_eq!(self.state, ModelState::Stopping(session_id), "ENDED without STOP");
+                Out::Ended {
+                    session_id,
+                    total_frames,
+                    dropped_frames,
+                } => {
+                    assert_eq!(
+                        self.out_session,
+                        Some(session_id),
+                        "ENDED for another session (P-CAP-10)"
+                    );
+                    assert!(
+                        self.ended
+                            .insert(session_id, (total_frames, dropped_frames))
+                            .is_none(),
+                        "ENDED twice"
+                    );
+                    assert_eq!(
+                        self.state,
+                        ModelState::Stopping(session_id),
+                        "ENDED without STOP"
+                    );
                     self.state = ModelState::Idle;
                     self.out_session = None;
                 }
@@ -250,30 +271,48 @@ impl Model {
     }
 
     fn check(&self) {
-        assert_eq!(self.observed_controls, self.expected_controls, "control responses");
+        assert_eq!(
+            self.observed_controls, self.expected_controls,
+            "control responses"
+        );
         for (id, accepted) in &self.accepted {
             let chunks = self.data.get(id).map(Vec::as_slice).unwrap_or(&[]);
             let mut end = 0u64;
             let mut delivered = 0u64;
             for (pos, frames) in chunks {
                 // P-CAP-9
-                assert!((1..=MAX_FRAMES_PER_DATA).contains(&frames.len()), "DATA size {}", frames.len());
+                assert!(
+                    (1..=MAX_FRAMES_PER_DATA).contains(&frames.len()),
+                    "DATA size {}",
+                    frames.len()
+                );
                 // P-CAP-6
                 assert!(*pos >= end, "position went backwards: {pos} < {end}");
                 // P-CAP-7
                 let k = *pos as usize;
-                assert_eq!(&accepted[k..k + frames.len()], &frames[..], "frames at {pos}");
+                assert_eq!(
+                    &accepted[k..k + frames.len()],
+                    &frames[..],
+                    "frames at {pos}"
+                );
                 end = pos + frames.len() as u64;
                 delivered += frames.len() as u64;
             }
             if let Some((total, dropped)) = self.ended.get(id) {
                 // P-CAP-11
-                assert_eq!(*total, accepted.len() as u64, "total_frames of session {id}");
+                assert_eq!(
+                    *total,
+                    accepted.len() as u64,
+                    "total_frames of session {id}"
+                );
                 // P-CAP-5
                 assert_eq!(delivered + dropped, *total, "conservation of session {id}");
                 assert_eq!(*dropped, 0, "no overflow expected in this test");
             } else {
-                assert!(self.aborted.contains(id), "session {id} neither ended nor aborted");
+                assert!(
+                    self.aborted.contains(id),
+                    "session {id} neither ended nor aborted"
+                );
             }
         }
     }

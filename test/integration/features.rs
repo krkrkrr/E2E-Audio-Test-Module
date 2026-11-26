@@ -44,7 +44,10 @@ struct W {
 
 impl fmt::Debug for W {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("W").field("outs", &self.outs.len()).field("session", &self.dev.session()).finish()
+        f.debug_struct("W")
+            .field("outs", &self.outs.len())
+            .field("session", &self.dev.session())
+            .finish()
     }
 }
 
@@ -78,7 +81,12 @@ impl W {
     }
 
     fn random_frames(&mut self, n: usize) -> Vec<AudioFrame> {
-        (0..n).map(|_| AudioFrame { left: self.random_u16() as i16, right: self.random_u16() as i16 }).collect()
+        (0..n)
+            .map(|_| AudioFrame {
+                left: self.random_u16() as i16,
+                right: self.random_u16() as i16,
+            })
+            .collect()
     }
 
     fn ramp_frames(&mut self, n: usize) -> Vec<AudioFrame> {
@@ -157,7 +165,11 @@ impl W {
 
     /// 現在（または直近）のセッションの出力。最後の STARTED から後。
     fn session_outs(&self) -> &[Out] {
-        let start = self.outs.iter().rposition(|o| matches!(o, Out::Started(_))).map_or(0, |i| i + 1);
+        let start = self
+            .outs
+            .iter()
+            .rposition(|o| matches!(o, Out::Started(_)))
+            .map_or(0, |i| i + 1);
         &self.outs[start..]
     }
 
@@ -183,16 +195,27 @@ impl W {
 
     fn ended(&self) -> Option<(u32, u64, u64)> {
         self.outs.iter().rev().find_map(|o| match o {
-            Out::Ended { session_id, total_frames, dropped_frames } => {
-                Some((*session_id, *total_frames, *dropped_frames))
-            }
+            Out::Ended {
+                session_id,
+                total_frames,
+                dropped_frames,
+            } => Some((*session_id, *total_frames, *dropped_frames)),
             _ => None,
         })
     }
 
     fn last_infos(&self, n: usize) -> Vec<String> {
-        let infos: Vec<String> =
-            self.outs.iter().filter_map(|o| if let Out::Info(t) = o { Some(t.clone()) } else { None }).collect();
+        let infos: Vec<String> = self
+            .outs
+            .iter()
+            .filter_map(|o| {
+                if let Out::Info(t) = o {
+                    Some(t.clone())
+                } else {
+                    None
+                }
+            })
+            .collect();
         assert!(infos.len() >= n, "expected {n} INFO, got {}", infos.len());
         infos[infos.len() - n..].to_vec()
     }
@@ -204,7 +227,9 @@ impl W {
             Some((n, rest)) => (n, Some(rest.trim_end_matches(')'))),
             None => (spec, None),
         };
-        let value = arg.and_then(|a| a.split('=').nth(1)).map(|v| v.parse::<u64>().unwrap());
+        let value = arg
+            .and_then(|a| a.split('=').nth(1))
+            .map(|v| v.parse::<u64>().unwrap());
         let idx = self.outs[self.control_cursor..]
             .iter()
             .position(|o| matches!(o, Out::Started(_) | Out::Error(_) | Out::Info(_)))
@@ -212,8 +237,12 @@ impl W {
             .unwrap_or_else(|| panic!("no response; expected {spec}; outs={:?}", self.outs));
         let got = &self.outs[idx];
         match (name, got) {
-            ("STARTED", Out::Started(id)) => assert!(value.is_none_or(|v| v == *id as u64), "{got:?} vs {spec}"),
-            ("ERROR", Out::Error(c)) => assert!(value.is_none_or(|v| v == *c as u64), "{got:?} vs {spec}"),
+            ("STARTED", Out::Started(id)) => {
+                assert!(value.is_none_or(|v| v == *id as u64), "{got:?} vs {spec}")
+            }
+            ("ERROR", Out::Error(c)) => {
+                assert!(value.is_none_or(|v| v == *c as u64), "{got:?} vs {spec}")
+            }
             ("INFO", Out::Info(_)) => {}
             _ => panic!("expected {spec}, got {got:?}"),
         }
@@ -226,7 +255,8 @@ fn unescape(s: &str) -> Vec<u8> {
 }
 
 fn info_line<'a>(info: &'a str, key: &str) -> Option<&'a str> {
-    info.lines().find_map(|l| l.strip_prefix(key).and_then(|r| r.strip_prefix('=')))
+    info.lines()
+        .find_map(|l| l.strip_prefix(key).and_then(|r| r.strip_prefix('=')))
 }
 
 // ---------------------------------------------------------------------------
@@ -237,7 +267,9 @@ fn configured(_w: &mut W) {}
 
 #[given(regex = r"^音声ストリームは (Open|Closed) である$")]
 fn given_stream(w: &mut W, state: String) {
-    w.dev.set_alt_setting(if state == "Open" { 1 } else { 0 }).unwrap();
+    w.dev
+        .set_alt_setting(if state == "Open" { 1 } else { 0 })
+        .unwrap();
     w.frames_before = w.dev.audio().frames_received();
 }
 
@@ -256,7 +288,11 @@ fn usb_reset(w: &mut W) {
 
 #[then(regex = r"^音声ストリームは (Open|Closed) (?:になる|のままである)$")]
 fn then_stream(w: &mut W, state: String) {
-    let expected = if state == "Open" { StreamState::Open } else { StreamState::Closed };
+    let expected = if state == "Open" {
+        StreamState::Open
+    } else {
+        StreamState::Closed
+    };
     assert_eq!(w.dev.audio().state(), expected);
 }
 
@@ -331,10 +367,16 @@ fn published_delta(w: &mut W, n: u64) {
     assert_eq!(w.frames_since_mark().len() as u64, n);
 }
 
-#[then(regex = r"^(?:各フレームの L と R は、パケットのバイト列をリトルエンディアンで読んだ値と一致する|公開された音声フレームは、パケットのバイト列と完全に一致する)$")]
+#[then(
+    regex = r"^(?:各フレームの L と R は、パケットのバイト列をリトルエンディアンで読んだ値と一致する|公開された音声フレームは、パケットのバイト列と完全に一致する)$"
+)]
 fn published_bytes_match(w: &mut W) {
     w.drain();
-    let bytes: Vec<u8> = w.frames_since_mark().iter().flat_map(|f| f.to_le_bytes()).collect();
+    let bytes: Vec<u8> = w
+        .frames_since_mark()
+        .iter()
+        .flat_map(|f| f.to_le_bytes())
+        .collect();
     let p = &w.last_packet;
     assert_eq!(&bytes[..], &p[..p.len() - p.len() % 4]);
 }
@@ -357,7 +399,9 @@ fn nothing_published(w: &mut W) {
     assert_eq!(w.dev.audio().frames_received(), w.frames_before);
 }
 
-#[given(regex = r"^ホストが両チャンネルの音量を (-?\d+) dB に設定(?:している|し、(L|R) をミュートしている)$")]
+#[given(
+    regex = r"^ホストが両チャンネルの音量を (-?\d+) dB に設定(?:している|し、(L|R) をミュートしている)$"
+)]
 fn set_volume(w: &mut W, db: i16, mute: String) {
     w.controls.volume_8q8_db = [db * 256; 2];
     match mute.as_str() {
@@ -368,7 +412,7 @@ fn set_volume(w: &mut W, db: i16, mute: String) {
     w.dev.set_host_controls(w.controls);
 }
 
-#[given(regex = r"^ホストが (L|R|両) ?チャンネルをミュートしている$")]
+#[given(regex = r"^ホストが ?(L|R|両) ?チャンネルをミュートしている$")]
 fn set_mute(w: &mut W, ch: String) {
     match ch.as_str() {
         "L" => w.controls.muted[0] = true,
@@ -404,7 +448,11 @@ fn request_feedback(w: &mut W, times: String) {
 #[then(regex = r"^(?:返る 3 バイトは|すべての応答は) 00 00 0C である$")]
 fn feedback_is_48k(w: &mut W) {
     assert!(!w.feedback.is_empty());
-    assert!(w.feedback.iter().all(|f| *f == Some(FEEDBACK_48K)), "{:?}", w.feedback);
+    assert!(
+        w.feedback.iter().all(|f| *f == Some(FEEDBACK_48K)),
+        "{:?}",
+        w.feedback
+    );
 }
 
 #[then("フィードバックは返らない")]
@@ -515,7 +563,9 @@ fn started_no_frames(w: &mut W, id: u32) {
     w.start_session(id);
 }
 
-#[given(regex = r"^CDC が(?:読まれていない|しばらく読まれず、(\d+) 個のフレームがバッファに溜まっている)$")]
+#[given(
+    regex = r"^CDC が(?:読まれていない|しばらく読まれず、(\d+) 個のフレームがバッファに溜まっている)$"
+)]
 fn not_reading(w: &mut W, n: String) {
     w.reading = false;
     if let Ok(n) = n.parse::<usize>() {
@@ -664,13 +714,21 @@ fn next_recorded_position(w: &mut W, pos: u64) {
     let frames = w.ramp_frames(48);
     w.publish(frames);
     w.drain();
-    assert!(w.session_data().iter().any(|d| d.0 == pos), "{:?}", w.session_data().iter().map(|d| d.0).collect::<Vec<_>>());
+    assert!(
+        w.session_data().iter().any(|d| d.0 == pos),
+        "{:?}",
+        w.session_data().iter().map(|d| d.0).collect::<Vec<_>>()
+    );
 }
 
 #[then(regex = r"^次の DATA の位置は (\d+) である$")]
 fn next_data_position(w: &mut W, pos: u64) {
     w.drain();
-    assert!(w.session_data().iter().any(|d| d.0 == pos), "{:?}", w.session_data().iter().map(|d| d.0).collect::<Vec<_>>());
+    assert!(
+        w.session_data().iter().any(|d| d.0 == pos),
+        "{:?}",
+        w.session_data().iter().map(|d| d.0).collect::<Vec<_>>()
+    );
 }
 
 #[then(regex = r"^セッション (\d+) の ENDED は通常どおり送られる$")]
@@ -707,7 +765,11 @@ fn chunk_count(w: &mut W, n: usize) {
 
 #[then("どの DATA も 1〜256 個のフレームを持つ")]
 fn chunk_sizes(w: &mut W) {
-    assert!(w.session_data().iter().all(|d| (1..=256).contains(&d.1.len())));
+    assert!(
+        w.session_data()
+            .iter()
+            .all(|d| (1..=256).contains(&d.1.len()))
+    );
 }
 
 #[then(regex = r"^位置 (\d+)〜(\d+) (?:がすべて届く|のフレームは元の値のまま届く)$")]
@@ -720,7 +782,11 @@ fn positions_delivered(w: &mut W, from: u64, to: u64) {
         }
     }
     for k in from..=to {
-        assert_eq!(by_pos.get(&k), Some(&w.session_published[k as usize]), "position {k}");
+        assert_eq!(
+            by_pos.get(&k),
+            Some(&w.session_published[k as usize]),
+            "position {k}"
+        );
     }
 }
 
@@ -733,14 +799,22 @@ fn dropped_is(w: &mut W, n: u64) {
 fn harness_detects_gap(w: &mut W, n: u64) {
     w.drain();
     let data = w.session_data();
-    let gaps: u64 = data.windows(2).map(|p| p[1].0 - (p[0].0 + p[0].1.len() as u64)).sum();
+    let gaps: u64 = data
+        .windows(2)
+        .map(|p| p[1].0 - (p[0].0 + p[0].1.len() as u64))
+        .sum();
     assert_eq!(gaps, n);
 }
 
 #[then("INFO が DATA と DATA の間に 1 つ届く")]
 fn info_between_data(w: &mut W) {
     let outs = w.session_outs();
-    let infos: Vec<usize> = outs.iter().enumerate().filter(|(_, o)| matches!(o, Out::Info(_))).map(|(i, _)| i).collect();
+    let infos: Vec<usize> = outs
+        .iter()
+        .enumerate()
+        .filter(|(_, o)| matches!(o, Out::Info(_)))
+        .map(|(i, _)| i)
+        .collect();
     assert_eq!(infos.len(), 1);
     assert!(outs[..infos[0]].iter().any(Out::is_data) && outs[infos[0]..].iter().any(Out::is_data));
 }
@@ -752,10 +826,15 @@ fn remaining_delivered(w: &mut W, n: usize) {
     assert_eq!(w.frames_since_mark().len(), n);
 }
 
-#[then(regex = r"^(?:その後に )?ENDED\(session_id=(\d+), total_frames=(\d+), dropped_frames=(\d+)\) が届く$")]
+#[then(
+    regex = r"^(?:その後に )?ENDED\(session_id=(\d+), total_frames=(\d+), dropped_frames=(\d+)\) が届く$"
+)]
 fn ended_with(w: &mut W, id: u32, total: u64, dropped: u64) {
     w.drain();
-    assert!(matches!(w.outs.last(), Some(Out::Ended { .. })), "ENDED must come after the DATA");
+    assert!(
+        matches!(w.outs.last(), Some(Out::Ended { .. })),
+        "ENDED must come after the DATA"
+    );
     assert_eq!(w.ended(), Some((id, total, dropped)));
 }
 
@@ -791,7 +870,13 @@ fn no_data(w: &mut W) {
 #[then("ENDED はちょうど 1 回届く")]
 fn ended_once(w: &mut W) {
     w.drain();
-    assert_eq!(w.outs.iter().filter(|o| matches!(o, Out::Ended { .. })).count(), 1);
+    assert_eq!(
+        w.outs
+            .iter()
+            .filter(|o| matches!(o, Out::Ended { .. }))
+            .count(),
+        1
+    );
 }
 
 #[then(regex = r"^2 回目の STOP には ERROR\(NotRecording=2\) が返る$")]
@@ -817,7 +902,10 @@ fn info_controls(w: &mut W, db: i32, ch: String) {
     w.drain();
     let info = w.last_infos(1).remove(0);
     let v = db * 256;
-    assert_eq!(info_line(&info, "volume_8q8"), Some(format!("{v},{v}").as_str()));
+    assert_eq!(
+        info_line(&info, "volume_8q8"),
+        Some(format!("{v},{v}").as_str())
+    );
     let mute = if ch == "L" { "1,0" } else { "0,1" };
     assert_eq!(info_line(&info, "mute"), Some(mute));
 }

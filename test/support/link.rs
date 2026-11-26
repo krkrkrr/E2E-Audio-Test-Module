@@ -12,8 +12,15 @@ use capture_core::link::MAX_FRAME_LEN;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Out {
     Started(u32),
-    Data { position: u64, frames: Vec<AudioFrame> },
-    Ended { session_id: u32, total_frames: u64, dropped_frames: u64 },
+    Data {
+        position: u64,
+        frames: Vec<AudioFrame>,
+    },
+    Ended {
+        session_id: u32,
+        total_frames: u64,
+        dropped_frames: u64,
+    },
     Info(String),
     Error(u8),
 }
@@ -30,7 +37,11 @@ pub fn crc16_reference(bytes: &[u8]) -> u16 {
     for &b in bytes {
         crc ^= (b as u16) << 8;
         for _ in 0..8 {
-            crc = if crc & 0x8000 != 0 { (crc << 1) ^ 0x1021 } else { crc << 1 };
+            crc = if crc & 0x8000 != 0 {
+                (crc << 1) ^ 0x1021
+            } else {
+                crc << 1
+            };
         }
     }
     crc
@@ -64,16 +75,29 @@ fn parse(kind: u8, p: &[u8]) -> Out {
             Out::Started(u32_at(0))
         }
         0x02 => {
-            assert!(p.len() >= 8 && (p.len() - 8) % 4 == 0, "bad DATA length {}", p.len());
+            assert!(
+                p.len() >= 8 && (p.len() - 8).is_multiple_of(4),
+                "bad DATA length {}",
+                p.len()
+            );
             let frames = p[8..]
-                .chunks_exact(4)
-                .map(|c| AudioFrame::from_le_bytes([c[0], c[1], c[2], c[3]]))
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .map(|&c| AudioFrame::from_le_bytes(c))
                 .collect();
-            Out::Data { position: u64_at(0), frames }
+            Out::Data {
+                position: u64_at(0),
+                frames,
+            }
         }
         0x03 => {
             assert_eq!(p.len(), 20);
-            Out::Ended { session_id: u32_at(0), total_frames: u64_at(4), dropped_frames: u64_at(12) }
+            Out::Ended {
+                session_id: u32_at(0),
+                total_frames: u64_at(4),
+                dropped_frames: u64_at(12),
+            }
         }
         0x04 => Out::Info(String::from_utf8(p.to_vec()).expect("INFO is UTF-8")),
         0x7F => {
@@ -115,7 +139,10 @@ pub fn ramp(from: u64, n: usize) -> Vec<AudioFrame> {
     (0..n as u64)
         .map(|i| {
             let k = from + i;
-            AudioFrame { left: k as i16, right: !(k as i16) }
+            AudioFrame {
+                left: k as i16,
+                right: !(k as i16),
+            }
         })
         .collect()
 }
