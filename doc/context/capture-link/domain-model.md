@@ -122,7 +122,7 @@ classDiagram
 | STARTED | `session_id` u32 |
 | DATA | `position` u64、音声フレーム × 1〜256（各 4 B、L, R の i16 LE） |
 | ENDED | `session_id` u32、`total_frames` u64、`dropped_frames` u64 |
-| INFO | UTF-8 の `key=value` 行（版、フォーマット、状態、ホスト制御値） |
+| INFO | UTF-8 の `key=value\n` 行。キーは `version`、`format`（`48000/16/2`）、`state`（`idle` / `recording` / `stopping`）、`stream`（`open` / `closed`）、`session`、`position`、`dropped`、`volume_8q8`（`L,R`、1/256 dB 単位）、`mute`（`L,R`、0 / 1） |
 | ERROR | `code` u8（`LinkError`） |
 
 ### ドメインイベント

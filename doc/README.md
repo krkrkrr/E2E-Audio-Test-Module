@@ -16,6 +16,7 @@ RP2040 を USB Audio の出力先にし、ホストのアプリが出した音�
 | 用語 | [glossary.md](glossary.md) |
 | 決定とその理由 | [ADR/](ADR/) |
 | 未解決の問い | [questions/index.md](questions/index.md) |
+| テスト戦略 | [testing-strategy.md](testing-strategy.md) |
 | 測ったこと | [evidence/](evidence/) |
 | 増分ごとの要件 | [increments/](increments/) |
 
@@ -23,4 +24,4 @@ RP2040 を USB Audio の出力先にし、ホストのアプリが出した音�
 
 | 日付 | 増分 | コンテキスト | Status |
 |---|---|---|---|
-| 2026-11-26 | [usb-audio-capture](increments/2026-11-26-usb-audio-capture/) | audio-in, capture-link | Phase 3 complete — features: audio-in [stream-open-close](context/audio-in/features/stream-open-close.feature), [receive-audio-packet](context/audio-in/features/receive-audio-packet.feature), [rate-feedback](context/audio-in/features/rate-feedback.feature); capture-link [start-session](context/capture-link/features/start-session.feature), [receive-capture-data](context/capture-link/features/receive-capture-data.feature), [stop-session](context/capture-link/features/stop-session.feature), [device-info](context/capture-link/features/device-info.feature) |
+| 2026-11-26 | [usb-audio-capture](increments/2026-11-26-usb-audio-capture/) | audio-in, capture-link | Phase 4 complete — features: audio-in [stream-open-close](context/audio-in/features/stream-open-close.feature), [receive-audio-packet](context/audio-in/features/receive-audio-packet.feature), [rate-feedback](context/audio-in/features/rate-feedback.feature); capture-link [start-session](context/capture-link/features/start-session.feature), [receive-capture-data](context/capture-link/features/receive-capture-data.feature), [stop-session](context/capture-link/features/stop-session.feature), [device-info](context/capture-link/features/device-info.feature) |

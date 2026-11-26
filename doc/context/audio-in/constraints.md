@@ -20,4 +20,20 @@ description: audio-in コンテキストが守る規則と不変条件。各不�
 
 ## 不変条件
 
-Phase 4 で追記する。
+各行は、それを守るテストへリンクする。
+
+### AUD-2 音声パケットを受け、音声フレームとして公開する
+
+| ID | プロパティ | 種別 | 表現 | テスト |
+|---|---|---|---|---|
+| P-AUD-1 | フレーム化はバイト列を保存する | ラウンドトリップ | `∀ p: concat(bytes(receive(p))) == p[..len(p) - len(p) % 4]` | [audio_in.rs](../../../test/integration/audio_in.rs) |
+| P-AUD-2 | 数は単調に、パケット長どおりに増える | 単調 | `Δframes_received == len(p) / 4`、`Δpartial_packets == (len(p) % 4 != 0)` | audio_in.rs |
+| P-AUD-3 | ホスト制御値はサンプルに作用しない | 同値 | `∀ c, p: receive(p) under c == receive(p) under default` | audio_in.rs |
+| P-AUD-4 | 閉じている間は何も公開しない | 否定 | `state == Closed ⇒ receive(p) == []` | audio_in.rs |
+
+### AUD-1 / AUD-3 ストリームとフィードバック
+
+| ID | プロパティ | 種別 | 表現 | テスト |
+|---|---|---|---|---|
+| P-AUD-5 | 代替設定の適用は冪等 | 冪等 | `set_alt(a); set_alt(a) ≡ set_alt(a)` | audio_in.rs |
+| P-AUD-6 | フィードバックは閉じていれば無く、開いていれば常に 48.0 | 不変量 | `∀ 操作列: feedback ∈ {None if Closed, 00 00 0C if Open}` | audio_in.rs |

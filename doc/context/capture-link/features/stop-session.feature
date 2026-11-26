@@ -8,11 +8,11 @@ Feature: 録音セッションを停止する
     Given CDC が開かれている
 
   Scenario: Happy path — STOP 以前のフレームを送り終えてから ENDED が届く
-    Given セッション 1 が Recording で、480 個のフレームを受けている
-    And そのうち 200 個はまだ送られていない
+    Given セッション 1 が Recording で、512 個のフレームを受けている
+    And そのうち 256 個はまだ送られていない
     When ハーネスが "STOP\n" を送る
-    Then 残りの 200 個が DATA で届く
-    And その後に ENDED(session_id=1, total_frames=480, dropped_frames=0) が届く
+    Then 残りの 256 個が DATA で届く
+    And その後に ENDED(session_id=1, total_frames=512, dropped_frames=0) が届く
     And 録音セッションは Idle に戻る
 
   Scenario: Business rule — STOP の後に届いたフレームは録音されない
