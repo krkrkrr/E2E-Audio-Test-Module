@@ -2,7 +2,8 @@
 type: Architecture Decision Record
 title: "ADR-0001: RP2040 のファームを Rust と embassy で書く"
 description: USB Audio と CDC の複合デバイスを、embassy-usb の UAC1 Speaker と CDC ACM で実装する。
-status: draft
+status: stable
+verified: { by: human:krr, at: 2026-11-26T09:18:52Z }
 generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:17:22Z }
 sources:
   - id: embassy-usb-crate
@@ -15,7 +16,7 @@ sources:
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

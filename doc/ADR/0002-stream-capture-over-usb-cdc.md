@@ -2,7 +2,8 @@
 type: Architecture Decision Record
 title: "ADR-0002: 録音はデバイスに貯めず USB CDC でリアルタイムに流す"
 description: 受けた音声を RP2040 内に保存せず、START から STOP まで同じ USB の CDC でホストへ連続転送する。
-status: draft
+status: stable
+verified: { by: human:krr, at: 2026-11-26T09:18:52Z }
 generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:17:22Z }
 ---
 
@@ -10,7 +11,7 @@ generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:17:22Z }
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 

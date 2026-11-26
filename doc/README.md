@@ -10,6 +10,9 @@ RP2040 を USB Audio の出力先にし、ホストのアプリが出した音�
 
 | 何を知りたいか | どこ |
 |---|---|
+| システムの境界とコンテキスト | [system-context.md](system-context.md) |
+| ユースケース | [use-cases.md](use-cases.md) |
+| コンテキストごとの設計 | [context/audio-in/](context/audio-in/domain-model.md)、[context/capture-link/](context/capture-link/domain-model.md) |
 | 用語 | [glossary.md](glossary.md) |
 | 決定とその理由 | [ADR/](ADR/) |
 | 未解決の問い | [questions/index.md](questions/index.md) |
@@ -20,4 +23,4 @@ RP2040 を USB Audio の出力先にし、ホストのアプリが出した音�
 
 | 日付 | 増分 | コンテキスト | Status |
 |---|---|---|---|
-| 2026-11-26 | [usb-audio-capture](increments/2026-11-26-usb-audio-capture/) | Phase 2 で決定 | Phase 1 complete |
+| 2026-11-26 | [usb-audio-capture](increments/2026-11-26-usb-audio-capture/) | audio-in, capture-link | Phase 2 complete |
