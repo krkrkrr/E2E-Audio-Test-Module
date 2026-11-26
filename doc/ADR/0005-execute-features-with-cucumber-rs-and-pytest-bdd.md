@@ -2,7 +2,8 @@
 type: Architecture Decision Record
 title: "ADR-0005: フィーチャーファイルを cucumber-rs と pytest-bdd で実行する"
 description: ファームの中核をハードウェア無しのシミュレーションとして cucumber-rs で、ハーネス側の復号を pytest-bdd で実行し、.feature を検査されない文書にしない。
-status: draft
+status: stable
+verified: { by: human:krr, at: 2026-11-26T10:05:30Z }
 generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:30:00Z }
 ---
 
@@ -10,7 +11,7 @@ generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:30:00Z }
 
 ## Status
 
-Proposed
+Accepted
 
 ## Context
 
