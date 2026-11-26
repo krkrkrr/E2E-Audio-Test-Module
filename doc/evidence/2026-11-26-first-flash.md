@@ -41,3 +41,14 @@ serial MCP の読み出しは出力を切り詰めるため、DATA の位置の�
 | # | 操作 | 観測 | 解釈 |
 |---|---|---|---|
 | 10 | ハーネスで 5 秒録音 | `Ended(session_id=6, total_frames=241008, dropped_frames=0)`、gaps `[]`、CRC エラー 0 | 約 5.02 秒分。**デバイス側の欠落 0、受信側で検出した位置の飛び 0、CRC 不一致 0**。ハーネスの読み出しは 192 kB/s に追いついている |
+
+## 追記: 実機 E2E テスト（2026-11-26）
+
+ユーザーが Windows の PowerShell で `$env:E2E_AUDIO_PORT = "COM7"` を設定し、`pytest -m device test/e2e -v` を実行した。
+他の音は止めた状態。Python 3.15.2、pytest 9.2.0、hypothesis 6.170.17。
+
+| # | 操作 | 観測 | 解釈 |
+|---|---|---|---|
+| 11 | `test_p_e2e_played_signal_is_captured_bit_exact`（hypothesis、5 例） | PASSED（3.56 s）。sounddevice 由来の DeprecationWarning が 206 件 | **WASAPI 排他モードで鳴らした 0.1〜1 秒の乱数ステレオ信号が、5 例とも録音の中にビット一致で連続して現れた。** 同時に、保存則と欠落 0（P-E2E-2）も成り立った |
+
+共有モードでは測っていない。

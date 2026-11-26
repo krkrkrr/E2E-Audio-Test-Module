@@ -75,5 +75,5 @@ OS のミキサがサンプル値を変えることは、ファームの責任�
 
 ## 未解決
 
-- [Q-0001](../../questions/open/host-audio/0001-bit-exact-host-path.md): Windows のどの設定でアプリのサンプル値が USB にそのまま届くか
-- [Q-0002](../../questions/open/environment/0002-flash-and-e2e-runner.md): UF2 の書き込みと E2E テストを、どこから誰が実行するか
+- [Q-0001](../../questions/answered/host-audio/0001-bit-exact-host-path.md): Windows のどの設定でアプリのサンプル値が USB にそのまま届くか
+- [Q-0002](../../questions/answered/environment/0002-flash-and-e2e-runner.md): UF2 の書き込みと E2E テストを、どこから誰が実行するか

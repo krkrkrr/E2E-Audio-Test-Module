@@ -7,7 +7,7 @@ generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:17:22Z }
 
 # Q-0001: Windows のどの設定で、アプリのサンプル値が USB にそのまま届くか？
 
-**Status: `open`** — the directory this file sits in is the status.
+**Status: `answered`** — the directory this file sits in is the status.
 **`git mv` it when that changes.** Do not write the status anywhere else.
 
 ## The question
@@ -15,6 +15,13 @@ generated: { by: claude-code/claude-sonnet-5-5, at: 2026-11-26T09:17:22Z }
 ファームは USB で届いたサンプルをビット一致で返す。
 しかし、アプリが出したサンプルと USB で届くサンプルが一致するかは、Windows のオーディオ経路で決まる。
 E2E テストで「アプリが出した音」と「録音」をビット一致で比べられる条件はどれか。
+
+## Answer
+
+**WASAPI 排他モードなら、アプリが鳴らしたサンプル値は USB にそのまま届く。**
+2026-11-26 の実機 E2E で、乱数信号 5 例がすべてビット一致した（[証拠 #11](../../../evidence/2026-11-26-first-flash.md)）。
+
+共有モードについては答えていない。[Q-0005](../../open/host-audio/0005-bit-exact-in-shared-mode.md) に分けた。
 
 ## What it would take
 

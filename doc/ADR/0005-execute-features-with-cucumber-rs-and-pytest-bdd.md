@@ -23,7 +23,7 @@ Phase 3 で 7 つの `.feature`（46 シナリオ）を書いた。
 一部のシナリオ（CRC 不一致の検出、途中からの同期）は、ハーネス側の復号器の振る舞いである。
 復号器は Python で書くので、Rust からは実行できない。
 
-実機と Windows の音声経路は、ビルド環境（Linux のサンドボックス）からは触れない（[Q-0002](../questions/open/environment/0002-flash-and-e2e-runner.md)）。
+実機と Windows の音声経路は、ビルド環境（Linux のサンドボックス）からは触れない（[Q-0002](../questions/answered/environment/0002-flash-and-e2e-runner.md)）。
 
 2026-11-26 の Phase 3 レビューで、ユーザーはこの方針で進めることに同意した。
 

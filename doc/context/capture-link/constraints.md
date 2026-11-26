@@ -53,5 +53,5 @@ description: capture-link コンテキストが守る規則と不変条件。各
 
 | ID | プロパティ | 種別 | 表現 | テスト |
 |---|---|---|---|---|
-| P-E2E-1 | 実機で鳴らした信号と録音がビット一致する | 同値 | 先頭の無音を除いて `captured == played`（[Q-0001](../../questions/open/host-audio/0001-bit-exact-host-path.md) の条件下） | [test_capture_e2e.py](../../../test/e2e/test_capture_e2e.py) |
+| P-E2E-1 | 実機で WASAPI 排他モードで鳴らした信号と録音がビット一致する | 同値 | 先頭の無音を除いて `captured == played`（[Q-0001](../../questions/answered/host-audio/0001-bit-exact-host-path.md) の条件下） | [test_capture_e2e.py](../../../test/e2e/test_capture_e2e.py) |
 | P-E2E-2 | 実機の録音で保存則が成り立ち、欠落が 0 | 不変量 | P-CAP-5 と `dropped_frames == 0` | test_capture_e2e.py |

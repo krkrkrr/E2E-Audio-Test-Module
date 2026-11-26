@@ -18,7 +18,7 @@ description: どの層を何で守るか。ファームの中核は Rust のシ�
 | 結合（プロパティ） | ハーネスの復号器と録音の再構成 | hypothesis | `test/integration/test_*.py` | どこでも |
 | フィーチャー | `doc/context/*/features/*.feature`（`@harness` 以外） | cucumber-rs | `test/integration/features.rs` | どこでも |
 | フィーチャー | `@harness` のシナリオ | pytest-bdd | `test/integration/test_harness_features.py` | どこでも |
-| E2E（プロパティ） | 実機 + Windows の音声経路 | pytest + hypothesis | `test/e2e/test_*.py`（`-m device`） | Windows（[Q-0002](questions/open/environment/0002-flash-and-e2e-runner.md)） |
+| E2E（プロパティ） | 実機 + Windows の音声経路 | pytest + hypothesis | `test/e2e/test_*.py`（`-m device`） | Windows（[Q-0002](questions/answered/environment/0002-flash-and-e2e-runner.md)） |
 
 ## プロパティベーステストの道具
 
